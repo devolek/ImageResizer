@@ -1,3 +1,5 @@
+import org.imgscalr.Scalr;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -31,11 +33,16 @@ public class ImageResizer extends Thread
                         image.getHeight() / (image.getWidth() / (double) newWidth)
                 );
 
-                Image tmp = image.getScaledInstance(newWidth, newHeight , Image.SCALE_SMOOTH);
+                BufferedImage scaledImg = Scalr.resize(image, Scalr.Method.SPEED, Scalr.Mode.FIT_TO_WIDTH,
+                        newWidth * 4, newHeight * 4, Scalr.OP_ANTIALIAS);
+                BufferedImage scaledImg2 = Scalr.resize(scaledImg, Scalr.Method.QUALITY, Scalr.Mode.FIT_TO_WIDTH,
+                        newWidth, newHeight, Scalr.OP_ANTIALIAS);
+
+               /* Image tmp = image.getScaledInstance(newWidth, newHeight , Image.SCALE_SMOOTH);
                 BufferedImage resized = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
                 Graphics2D g2d = resized.createGraphics();
                 g2d.drawImage(tmp, 0, 0, null);
-                g2d.dispose();
+                g2d.dispose();*/
 
                 /*BufferedImage newImage = new BufferedImage(
                         newWidth, newHeight, BufferedImage.TYPE_INT_RGB
@@ -52,7 +59,7 @@ public class ImageResizer extends Thread
                 }*/
 
                 File newFile = new File(dstFolder + "/" + file.getName());
-                ImageIO.write(resized, "jpg", newFile);
+                ImageIO.write(scaledImg2, "jpg", newFile);
             }
         }
         catch (Exception ex) {
